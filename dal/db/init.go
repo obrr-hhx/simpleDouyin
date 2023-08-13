@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 	gormopentracing "gorm.io/plugin/opentracing"
 
-	"github.com/obrr-hhx/simpleDouyin/pkg/contants"
+	"github.com/obrr-hhx/simpleDouyin/pkg/constants"
 )
 
 var DB *gorm.DB
@@ -13,7 +13,7 @@ var DB *gorm.DB
 // Init init db
 func Init() {
 	var err error
-	dsn := contants.MySqlDefaultDSN
+	dsn := constants.MySqlDefaultDSN
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
 		PrepareStmt:            true,
 		SkipDefaultTransaction: true,

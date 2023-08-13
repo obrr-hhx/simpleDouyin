@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "common";
+
+message User {
+    int64   id = 1;                     // user id
+    string  name = 2;                   // user name
+    int64   follow_count = 3;           // number of users followed by this user
+    int64   follower_count = 4;         // number of followers
+    bool    is_follow = 5;              // whether current user is following this user
+    string  avatar = 6;                 // user avatar
+    string  background_image = 7;       // background image
+    string  signature = 8;              // user profile
+    int64   total_favorited = 9;        // number of likes of all videos belong of this user
+    int64   work_count = 10;            // number of videos belong of this user
+    int64   favorite_count = 11;        // number of likes by this user
+}
+
+message Video {
+    int64   id = 1;                     // video id
+    User    author = 2;                 // author of this video
+    string  play_url = 3;               // video url
+    string  cover_url = 4;              // video cover url
+    int64   favorite_count = 5;         // number of likes of this video
+    int64   comment_count = 6;          // number of comments of this video
+    bool    is_favorite = 7;            // whether current user has liked this video
+    string  title = 8;                  // video title
+}

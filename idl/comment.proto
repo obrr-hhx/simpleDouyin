@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package common;
+
+import "api.proto";
+import "common.proto";
+
+option go_package = "interact/common";
+
+message Comment {
+    int64 id = 1;
+    User user = 2;
+    string content = 3;
+    int64 create_date = 4; // comment publication date, format mm-dd
+}
+
+message DouyinCommentActionRequest {
+    string token = 1; // user authentication token
+    int64 video_id = 2; // video id
+    int32 action_type = 3; // action type: 1 -> Post comment, 2 -> Delete comment
+    string comment_text = 4; // comment content
+    int64 comment_id = 5; // comment id
+}
+
+message DouyinCommentActionResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // error code
+    string status_msg = 2; // status description
+    Comment comment = 3; // comment
+}
+
+message DouyinCommentListRequest {
+    string token = 1; // user authentication token
+    int64 video_id = 2; // video id
+}
+
+message DouyinCommentListResponse {
+    int32 status_code = 1[(api.go_tag)='json:"status_code"']; // error code
+    string status_msg = 2; // status description
+    repeated Comment comment_list = 3; // comment list
+}
+
+service CommentHandler {
+    rpc CommentAction(DouyinCommentActionRequest) returns (DouyinCommentActionResponse) {
+        option (api.post) = {
+            path: "/douyin/comment/action"
+        }
+    }
+
+    rpc CommentList(DouyinCommentListRequest) returns (DouyinCommentListResponse) {
+        option (api.post) = {
+            path: "/douyin/comment/list"
+        }
+    }
+}
