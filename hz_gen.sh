@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ "$1" = "init" ]; then
-    hz new -mod github.com/obrr-hhx/simpleDouyin
+    hz new -mod github.com/obrr-hhx/simpleDouyin -force
     hz update -idl idl/publish.proto
     hz update -idl idl/relation.proto
 fi

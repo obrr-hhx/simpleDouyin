@@ -41,14 +41,10 @@ message DouyinCommentListResponse {
 
 service CommentHandler {
     rpc CommentAction(DouyinCommentActionRequest) returns (DouyinCommentActionResponse) {
-        option (api.post) = {
-            path: "/douyin/comment/action"
-        }
+        option (api.post) = "/douyin/comment/action";
     }
 
     rpc CommentList(DouyinCommentListRequest) returns (DouyinCommentListResponse) {
-        option (api.post) = {
-            path: "/douyin/comment/list"
-        }
+        option (api.post) = "/douyin/comment/list";
     }
 }

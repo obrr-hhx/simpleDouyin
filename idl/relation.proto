@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package relation
+package relation;
 
-import "api.proto"
-import "common.proto"
+import "api.proto";
+import "common.proto";
 
 option go_package = "social/relation";
 
@@ -14,7 +14,7 @@ message DouyinRelationActionRequest {
 }
 
 message DouyinRelationActionResponse {
-    int32 status_code = 1[(api.go_tag)'json:"status_code"'];
+    int32 status_code = 1[(api.go_tag)='json:"status_code"'];
     string status_msg = 2;
 }
 
@@ -24,7 +24,7 @@ message DouyinRelationFollowListRequest { // get follow list
 }
 
 message DouyinRelationFollowListResponse {
-    int32 status_code = 1[(api.go_tag)'json:"status_code"'];
+    int32 status_code = 1[(api.go_tag)='json:"status_code"'];
     string status_msg = 2;
     repeated User user_list = 3;
 }
@@ -35,7 +35,7 @@ message DouyinRelationFollowerListRequest { // get follower list
 }
 
 message DouyinRelationFollowerListResponse {
-    int32 status_code = 1[(api.go_tag)'json:"status_code"'];
+    int32 status_code = 1[(api.go_tag)='json:"status_code"'];
     string status_msg = 2;
     repeated User user_list = 3;
 }
