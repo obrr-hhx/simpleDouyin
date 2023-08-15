@@ -498,7 +498,7 @@ type FriendUser struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
+	common.User
 	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty" form:"message" query:"message"`                   // latest chat messages with this friend
 	MsgType int64  `protobuf:"varint,3,opt,name=msg_type,json=msgType,proto3" json:"msg_type,omitempty" form:"msg_type" query:"msg_type"` // message type, 0 -> Messages currently requested by the user, 1 -> Messages sent by the current requesting user
 }

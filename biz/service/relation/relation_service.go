@@ -2,6 +2,7 @@ package relation
 
 import (
 	"context"
+	"log"
 
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/obrr-hhx/simpleDouyin/biz/model/common"
@@ -137,39 +138,58 @@ func (r *RelationService) GetFollowerList(req *relation.DouyinRelationFollowerLi
 }
 
 // GetFriendList get friend list by request
-func (r *RelationService) GetFriendList(req *relation.DouyinRelationFriendListRequest) (list []*common.User, err error) {
+func (r *RelationService) GetFriendList(req *relation.DouyinRelationFriendListRequest) ([]*relation.FriendUser, error) {
 	user_id := req.UserId
-	var friend_list []*common.User
-	current_user_id, exists := r.c.Get("current_user_id")
-	if !exists {
-		current_user_id = int64(0)
+	current_user_id, _ := r.c.Get("current_user_id")
+
+	if current_user_id.(int64) != user_id {
+		return nil, errno.FriendListNoPermissionErr
 	}
+
+	var friend_list []*relation.FriendUser
 
 	FriendIdList, err := db.GetFriendList(user_id)
 	if err != nil {
 		return friend_list, err
 	}
 
-	// get the follow user info by their id
 	for _, friendId := range FriendIdList {
 		userInfo, err := user_service.NewUserService(r.ctx, r.c).GetUserInfo(friendId, current_user_id.(int64))
 		if err != nil {
-			continue
+			log.Printf("func error: GetFriendList -> GetUserInfo, err: %v", err)
 		}
-		user := common.User{
-			Id:              userInfo.Id,
-			Name:            userInfo.Name,
-			FollowCount:     userInfo.FollowCount,
-			FollowerCount:   userInfo.FollowerCount,
-			IsFollow:        userInfo.IsFollow,
-			Avatar:          userInfo.Avatar,
-			BackgroundImage: userInfo.BackgroundImage,
-			Signature:       userInfo.Signature,
-			TotalFavorited:  userInfo.TotalFavorited,
-			WorkCount:       userInfo.WorkCount,
-			FavoriteCount:   userInfo.FavoriteCount,
+		message, err := db.GetLatestMessageByIdPair(user_id, friendId)
+		if err != nil {
+			log.Printf("func error: GetFriendList -> GetLatestMessageByIdPair, err: %v", err)
 		}
-		friend_list = append(friend_list, &user)
+
+		var msgType int64
+		if message == nil {
+			msgType = 2
+			message = &db.Messages{}
+		} else if user_id == message.FromUserId {
+			msgType = 1
+		} else {
+			msgType = 0
+		}
+
+		friend_list = append(friend_list, &relation.FriendUser{
+			User: common.User{
+				Id:              userInfo.Id,
+				Name:            userInfo.Name,
+				FollowCount:     userInfo.FollowCount,
+				FollowerCount:   userInfo.FollowerCount,
+				IsFollow:        userInfo.IsFollow,
+				Avatar:          userInfo.Avatar,
+				BackgroundImage: userInfo.BackgroundImage,
+				Signature:       userInfo.Signature,
+				TotalFavorited:  userInfo.TotalFavorited,
+				WorkCount:       userInfo.WorkCount,
+				FavoriteCount:   userInfo.FavoriteCount,
+			},
+			Message: message.Content,
+			MsgType: msgType,
+		})
 	}
 	return friend_list, nil
 }
